@@ -1,8 +1,6 @@
 import java.io.File;
 
 public class FirstTimeSetUp {
-    /* TODO: Create folders necessary for program operation if not already existing */
-
     //Find Users Desktop
     public static String desktop = (System.getProperty("user.home") +
             File.separator + "Desktop");
@@ -12,18 +10,22 @@ public class FirstTimeSetUp {
         return desktop;
     }
 
-    // Create Base Folder "Library" if not exists
-    File libFolder = new File(desktop + File.separator + "Library");
-
-    if (!libFolder.isFile()) {
-        boolean folderCreated = libFolder.mkdir();
-        if (folderCreated) {
-            System.out.println("Folder 'Library' created on the Desktop.");
+    public static void makeFolder() {
+        // Create Base Folder "Library" if not exists
+        File libFolder = new File(desktop + File.separator + "Library");
+        // TODO: make subfolders and .txt files that go in them for Library management
+        if (libFolder.exists()) {
+            System.out.println("File 'Library' Exists Already");
         } else {
-            System.out.println("Failed to create the folder.");
+            System.out.println("File 'Library' Does Not Exist");
+            System.out.println("Creating 'Library' Folder at " +
+                    desktop + File.separator + "Library");
+            if(libFolder.mkdir()){
+                System.out.println("Library Folder created Successfully");
+            } else {
+                System.out.println("Library Folder creation Failed");
+            }
         }
-    } else {
-        System.out.println("Folder 'Library' already exists on the Desktop.");
     }
 
 }
