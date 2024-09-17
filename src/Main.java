@@ -2,7 +2,9 @@
 //By Donovan Andreu
 //2024
 
-public static void main(String[] args) {
+import java.io.IOException;
+
+public static void main(String[] args) throws IOException {
     //System.out.println(FirstTimeSetUp.getDesktop());
     FirstTimeSetUp.makeFolder();
 }
