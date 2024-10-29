@@ -18,7 +18,7 @@ public class FirstTimeSetUp {
         File libFolder = new File(desktop + File.separator + "Library");
         File bookFolder = new File(libFolder + File.separator + "Books");
         File membersFolder = new File(libFolder + File.separator + "Members");
-        File moviesFolder = new File(libFolder + File.separator + "Movies");
+        //File moviesFolder = new File(libFolder + File.separator + "Movies");
 
         // TODO: make subfolders and .txt files (make a new class that can be used for making books)
         // that go in them for Library management
@@ -54,9 +54,9 @@ public class FirstTimeSetUp {
                     writer.write("Admin," + adminPass +",true,true\n");
                     writer.close();
                 }
-                if(moviesFolder.mkdir()){
+                /*if(moviesFolder.mkdir()){
                     System.out.println("Movie Folder created Successfully");
-                }
+                }*/
             } else {
                 System.out.println("Library Folder creation Failed");
             }
