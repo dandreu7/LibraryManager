@@ -19,8 +19,8 @@ public static void main(String[] args) throws IOException {
             """);
     System.out.println("------------------------------------------------------------------");
 
-    // TODO: take scnr input and set it all to lowercase with no space. Also allow "Books" "membership" and
-    //  "login" as valid commands. Otherwise, ask user to please try again
+    // TODO: take scnr input and set it all to lowercase with no space(trim). Also allow "Books" "membership" and
+    //  "login" as valid commands.  Otherwise, ask user to please try again
     scnr.nextLine();
 
     // TODO: If User Logs in as an admin, bring up secret Admin Menu with features such as "book Management"
