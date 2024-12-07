@@ -48,10 +48,10 @@ public class FirstTimeSetUp {
                     //Use UserManagement.java to create a default admin in Members.txt
                     FileWriter writer = new FileWriter(membersFolder + File.separator + "Members.txt");
                     System.out.println("Please create an admin password: ");
-                    Scanner scnr = new Scanner(System.in);
-                    String adminPass = scnr.nextLine().trim();
-                    scnr.close();
+                    Scanner scan = new Scanner(System.in);
+                    String adminPass = scan.nextLine().trim();
                     writer.write("Admin," + adminPass +",true,true\n");
+                    //scan.close();
                     writer.close();
                 }
                 /*if(moviesFolder.mkdir()){
