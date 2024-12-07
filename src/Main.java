@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -10,7 +11,7 @@ public class Main {
 
         // Initialize bookshelf and load users
         Bookshelf bookshelf = new Bookshelf();
-        UserManagement loggedInUser = null;
+        UserManagement user = null;
         Scanner scnr = new Scanner(System.in);
 
         while (true) {
@@ -26,29 +27,42 @@ public class Main {
             String command = scnr.nextLine().trim().toLowerCase();
 
             switch (command) {
-                case "books", "browse books" -> browseBooks(scnr, bookshelf, loggedInUser);
-                case "membership", "create membership" -> createMembership(scnr);
-                case "login", "user login" -> loggedInUser = loginUser(scnr);
+                case "books", "browse books", "book", "browse" -> browseBooks(scnr, bookshelf, user);
+                case "membership", "create membership", "create" -> createMembership(scnr);
+                case "login", "user login" , "user" -> {
+                    user = loginUser(scnr);
+                    if (user != null && user.isAdmin()) {
+                    adminMenu(bookshelf, scnr);
+                }
+            }
                 case "exit" -> {
-                    System.out.println("Thank you for visiting the Library. Goodbye!");
+                    System.out.println("Thank you for visiting the Library, goodbye!");
                     return;
                 }
-                default -> System.out.println("Invalid command. Please try again.");
+                default -> System.out.println("Invalid command, please try again.");
             }
         }
     }
 
-    private static void browseBooks(Scanner scnr, Bookshelf bookshelf, UserManagement loggedInUser) {
+    // Browse Books
+    private static void browseBooks(Scanner scnr, Bookshelf bookshelf, UserManagement user) {
         while (true) {
-            System.out.println("Browse Books Menu:\n1. View all books\n2. Sort books\n3. Check out a book\n4. Return to main menu");
+            System.out.println("""
+                    Browse Books Menu:
+                    1. View all books
+                    2. Sort books
+                    3. Check out a book
+                    4. Return to main menu
+                    [Please Select a Number]
+                    """);
             String choice = scnr.nextLine().trim();
 
             switch (choice) {
                 case "1" -> bookshelf.displayBooks();
                 case "2" -> sortBooks(scnr, bookshelf);
-                case "3" -> checkOutBook(scnr, bookshelf, loggedInUser);
+                case "3" -> checkOutBook(scnr, bookshelf, user);
                 case "4" -> {
-                    System.out.println("Returning to the main menu.");
+                    System.out.println("Returning to main menu.");
                     return;
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
@@ -57,41 +71,46 @@ public class Main {
     }
 
     private static void sortBooks(Scanner scnr, Bookshelf bookshelf) {
-        System.out.println("Sort by:\n1. Author\n2. Year\n3. Availability");
+        System.out.println("""
+                Sort by:
+                1. Author
+                2. Year
+                3. Availability
+                [Please Select a Number]
+                """);
         String sortChoice = scnr.nextLine().trim();
 
         switch (sortChoice) {
             case "1" -> bookshelf.sortByAuthor();
             case "2" -> bookshelf.sortByYear();
             case "3" -> bookshelf.sortByAvailability();
-            default -> System.out.println("Invalid choice. Returning to browse menu.");
+            default -> System.out.println("Invalid choice! Returning to previous menu.");
         }
         System.out.println("Books sorted successfully!");
     }
-
-    private static void checkOutBook(Scanner scnr, Bookshelf bookshelf, UserManagement loggedInUser) {
-        if (loggedInUser == null || !loggedInUser.isMember()) {
-            System.out.println("You must be logged in as a member to check out a book.");
+    // Checking out a book
+    private static void checkOutBook(Scanner scnr, Bookshelf bookshelf, UserManagement user) {
+        // Check if user is logged in
+        if (user == null || !user.isMember()) {
+            System.out.println("You must be logged in to check out a book.");
             return;
         }
-
         System.out.println("Enter the title of the book you'd like to check out:");
         String title = scnr.nextLine().trim();
         Book book = bookshelf.findBookByTitle(title);
-
         if (book != null && !book.isCheckedOut()) {
             book.setCheckedOut(true);
             bookshelf.saveBooks(); // Save changes to file
-            printReceipt(loggedInUser.getUsername(), book.getTitle());
+            printReceipt(user.getUsername(), book.getTitle());
         } else if (book != null && book.isCheckedOut()) {
-            System.out.println("Sorry, that book is already checked out.");
+            System.out.println("Sorry, that book is currently checked out.");
         } else {
             System.out.println("Book not found. Please try again.");
         }
     }
-
+    // Create new Membership
     private static void createMembership(Scanner scnr) {
-        System.out.println("Create a Membership:");
+        System.out.println("----Create a Membership----");
         System.out.println("Enter your username:");
         String username = scnr.nextLine().trim();
         System.out.println("Enter your password:");
@@ -99,11 +118,12 @@ public class Main {
 
         UserManagement newUser = new UserManagement(username, password, false, true);
         UserManagement.addUser(UserManagement.loadUsers(), newUser);
-        System.out.println("Membership created successfully!");
+        System.out.println("Membership created successfully! Please Login to access member features.");
     }
 
+    // Log in
     private static UserManagement loginUser(Scanner scnr) {
-        System.out.println("User Login:");
+        System.out.println("----User Login----");
         System.out.println("Enter your username:");
         String username = scnr.nextLine().trim();
         System.out.println("Enter your password:");
@@ -119,15 +139,58 @@ public class Main {
         }
     }
 
+    // Admin Menu
+    private static void adminMenu(Bookshelf bookshelf, Scanner scnr) {
+        ArrayList<UserManagement> users = UserManagement.loadUsers();
+        while (true) {
+            System.out.println("--------------------ADMIN MENU--------------------");
+            System.out.println("""
+                    ~ Add Book
+                    ~ Delete Book
+                    ~ Delete User
+                    ~ Return to Main Menu
+                    """);
+            String input = scnr.nextLine().trim().toLowerCase();
+            switch (input) {
+                case "add book", "add" -> {
+                    System.out.println("Enter book title:");
+                    String title = scnr.nextLine();
+                    System.out.println("Enter book author:");
+                    String author = scnr.nextLine();
+                    System.out.println("Enter publication year:");
+                    int year = Integer.parseInt(scnr.nextLine());
+                    Book newBook = new Book(title, author, year, false);
+                    bookshelf.addBook(newBook);
+                }
+                case "delete book","delete b" -> {
+                    System.out.println("Enter the title of the book to delete:");
+                    String title = scnr.nextLine();
+                    bookshelf.deleteBook(title);
+                }
+                case "delete user", "user" -> {
+                    System.out.println("Enter the username of the user to delete:");
+                    String username = scnr.nextLine();
+                    UserManagement.deleteUser(users, username);
+                }
+                case "return to main menu", "menu", "main menu", "return", "main" -> {
+                    System.out.println("Returning to the main menu.");
+                    return;
+                }
+                default -> System.out.println("Invalid input. Please try again.");
+            }
+        }
+    }
+
     private static void printReceipt(String username, String bookTitle) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date today = new Date();
         Date dueDate = new Date(today.getTime() + (14L * 24 * 60 * 60 * 1000)); // Add 14 days
 
-        System.out.println("--------------------- RECEIPT ---------------------");
+        System.out.println("----------------------RECEIPT----------------------");
         System.out.println("Member: " + username);
         System.out.println("Book: " + bookTitle);
         System.out.println("Please return by: " + sdf.format(dueDate));
+        System.out.println("Have a great day!");
         System.out.println("--------------------------------------------------");
     }
 }
