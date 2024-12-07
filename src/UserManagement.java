@@ -36,16 +36,32 @@ public class UserManagement {
     }
 
     // Getters
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public boolean isAdmin() { return admin; }
-    public boolean isMember() { return isMember; }
+    public String getUsername() {
+        return username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public boolean isAdmin() {
+        return admin;
+    }
+    public boolean isMember() {
+        return isMember;
+    }
 
     // Setters
-    public void setUsername(String username) { this.username = username; }
-    public void setPassword(String password) { this.password = password; }
-    public void setAdmin(boolean admin) { this.admin = admin; }
-    public void setMember(boolean member) { isMember = member; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+    public void setMember(boolean member) {
+        isMember = member;
+    }
 
     // File operations
     public static ArrayList<UserManagement> loadUsers() {
@@ -93,6 +109,7 @@ public class UserManagement {
                 return user;
             }
         }
-        return null; // Return null if user not found
+        // If user isnt found, return null
+        return null;
     }
 }
