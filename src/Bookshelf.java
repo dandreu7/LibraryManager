@@ -76,8 +76,7 @@ public class Bookshelf {
         return null;
     }
 
-
-    // Display all books (for testing purposes)
+    // Display all books
     public void displayBooks() {
         for (Book book : books) {
             System.out.println(book);
