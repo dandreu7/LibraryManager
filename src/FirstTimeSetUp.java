@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class FirstTimeSetUp {
-    //Find Users Desktop
+    // Find Users Desktop
     public static String desktop = (System.getProperty("user.home") +
             File.separator + "Desktop");
 
-    //Display Path Method
+    // Display Path Method
     public static String getDesktop() {
         return desktop;
     }
