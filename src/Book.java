@@ -45,7 +45,7 @@ public class Book {
         return isCheckedOut;
     }
 
-    public void setCheckedOut(boolean isCheckedOut) { // Add this method
+    public void setCheckedOut(boolean isCheckedOut) {
         this.isCheckedOut = isCheckedOut;
     }
 
